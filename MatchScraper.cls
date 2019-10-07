@@ -53,12 +53,12 @@ Public Function ParsePlayerNames(oMatchResult As MatchResult, matchCard As HTMLD
     Dim cardResults As IHTMLElement
     Set cardResults = matchCard.getElementById("CardResults")
     
-    oMatchResult.PlayerX = cardResults.Children(0).Children(1).innerText
-    oMatchResult.PlayerY = cardResults.Children(0).Children(2).innerText
-    oMatchResult.PlayerZ = cardResults.Children(0).Children(3).innerText
-    oMatchResult.PlayerA = cardResults.Children(2).Children(0).innerText
-    oMatchResult.PlayerB = cardResults.Children(4).Children(0).innerText
-    oMatchResult.PlayerC = cardResults.Children(6).Children(0).innerText
+    oMatchResult.PlayerX = Trim(cardResults.Children(0).Children(1).innerText)
+    oMatchResult.PlayerY = Trim(cardResults.Children(0).Children(2).innerText)
+    oMatchResult.PlayerZ = Trim(cardResults.Children(0).Children(3).innerText)
+    oMatchResult.PlayerA = Trim(cardResults.Children(2).Children(0).innerText)
+    oMatchResult.PlayerB = Trim(cardResults.Children(4).Children(0).innerText)
+    oMatchResult.PlayerC = Trim(cardResults.Children(6).Children(0).innerText)
     
     Set ParsePlayerNames = oMatchResult
 End Function
