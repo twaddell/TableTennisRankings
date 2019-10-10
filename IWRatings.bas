@@ -141,7 +141,28 @@ Sub Run_Reports()
 tmp = GetParms(False, False)
 tmp = Rem_Rpts
 
-'R1_Jumpers
+Call RunReportR1Jumpers
+Call RunReportR2RtgByPlayer
+Call RunReportR3RtgByRtg
+Call RunReportR4PlrStats
+
+Sheets("Players").Select
+Range("A1").Select
+Sheets("Menu").Select
+ActiveSheet.Unprotect
+ActiveSheet.Shapes("V_Rpt1_Box").TextFrame.Characters.Font.ColorIndex = 1
+ActiveSheet.Shapes("V_Rpt1_Box").OnAction = "V_Rpt1"
+ActiveSheet.Shapes("V_Rpt2_Box").TextFrame.Characters.Font.ColorIndex = 1
+ActiveSheet.Shapes("V_Rpt2_Box").OnAction = "V_Rpt2"
+ActiveSheet.Shapes("V_Rpt3_Box").TextFrame.Characters.Font.ColorIndex = 1
+ActiveSheet.Shapes("V_Rpt3_Box").OnAction = "V_Rpt3"
+ActiveSheet.Shapes("V_Rpt4_Box").TextFrame.Characters.Font.ColorIndex = 1
+ActiveSheet.Shapes("V_Rpt4_Box").OnAction = "V_Rpt4"
+ActiveSheet.Protect DrawingObjects:=True, Contents:=True, Scenarios:=True
+tmp = Tidy_Up("Run_Reports_Info")
+End Sub
+
+Sub RunReportR1Jumpers()
 
 Sheets.Add.Name = "R1_Jumpers"
 Sheets("R1_Jumpers").Tab.ColorIndex = 5
@@ -183,11 +204,7 @@ Sheets("Players").Select
 lastrow = ActiveSheet.UsedRange.Rows.Count
 Sheets("R1_Jumpers").Select
 For x = 2 To lastrow
-If Rpt_Tm_Dot Then
-  Cells(x, 5) = Left(Sheets("Players").Cells(x, 3), 3) & "." & Right(Sheets("Players").Cells(x, 3), 1) & ":" & Sheets("Players").Cells(x, 4)
- Else
-  Cells(x, 5) = Sheets("Players").Cells(x, 3) & ":" & Sheets("Players").Cells(x, 4)
- End If
+    Cells(x, 5) = GetTeamCode(Sheets("Players").Cells(x, 3), Sheets("Players").Cells(x, 4), Rpt_Tm_Dot)
 Next x
 Sheets("Players").Select
 Columns("O:R").Select
@@ -215,7 +232,7 @@ Application.CutCopyMode = False
 ActiveCell.FormulaR1C1 = "PSEAS"
 lastrow = ActiveSheet.UsedRange.Rows.Count
 For x = 2 To lastrow
- If Trim(Cells(x, 10)) <> "Yes" Then
+ If Cells(x, 2) = 0 Then
   Cells(x, 10) = "*DEL*"
  Else
   If Cells(x, 1) <= 0 Or Cells(x, 6) = 0 Then
@@ -283,7 +300,9 @@ Range("A1").Select
 Sheets("Players").Select
 Range("A1").Select
 
-'R2_RtgByPlyr
+End Sub
+
+Sub RunReportR2RtgByPlayer()
 
 Sheets.Add.Name = "R2_RtgByPlyr"
 Sheets("R2_RtgByPlyr").Tab.ColorIndex = 5
@@ -305,14 +324,20 @@ Selection.Sort Key1:=Range("A2"), Order1:=xlAscending, Header:=xlYes, _
                DataOption1:=xlSortNormal
 lastrow = ActiveSheet.UsedRange.Rows.Count
 For x = 2 To lastrow
- If Rpt_Tm_Dot Then
-  Cells(x, 4) = Left(Cells(x, 2), 3) & "." & Right(Cells(x, 2), 1) & ":" & Cells(x, 3)
- Else
-  Cells(x, 4) = Cells(x, 2) & ":" & Cells(x, 3)
- End If
+ Cells(x, 4) = GetTeamCode(Cells(x, 2), Cells(x, 3), Rpt_Tm_Dot)
 Next x
+
 Columns("B:C").Select
 Selection.Delete Shift:=xlToLeft
+
+For x = lastrow To 2 Step -1
+ If Cells(x, 3) = 0 Then
+  Rows(x & ":" & x).Select
+  Selection.Delete Shift:=xlUp
+ End If
+Next x
+
+lastrow = ActiveSheet.UsedRange.Rows.Count
 Cells(1, 1) = "Player"
 Cells(1, 2) = "Team"
 Cells(1, 3) = "Rtg"
@@ -404,7 +429,9 @@ ctr_ftr = ""
 tmp = PrintSetup(prange, lft_hdr, ctr_hdr, rht_hdr, ctr_ftr, True)
 Range("A1").Select
 
-'R3_RtgByRtg
+End Sub
+
+Sub RunReportR3RtgByRtg()
 
 Sheets.Add.Name = "R3_RtgByRtg"
 Sheets("R3_RtgByRtg").Tab.ColorIndex = 5
@@ -428,11 +455,7 @@ Selection.Sort Key1:=Range("A2"), Order1:=xlDescending, Header:=xlYes, _
                DataOption1:=xlSortNormal
 lastrow = ActiveSheet.UsedRange.Rows.Count
 For x = 2 To lastrow
- If Rpt_Tm_Dot Then
-  Cells(x, 5) = Left(Cells(x, 3), 3) & "." & Right(Cells(x, 3), 1) & ":" & Cells(x, 4)
- Else
-  Cells(x, 5) = Cells(x, 3) & ":" & Cells(x, 4)
- End If
+    Cells(x, 5) = GetTeamCode(Cells(x, 3), Cells(x, 4), Rpt_Tm_Dot)
 Next x
 Columns("C:D").Select
 Selection.Delete Shift:=xlToLeft
@@ -526,7 +549,9 @@ ctr_hdr = "&""Arial,Bold""&12 " & League & Chr(10) & "&""Arial,Bold""&12&U " & "
 ctr_ftr = ""
 tmp = PrintSetup(prange, lft_hdr, ctr_hdr, rht_hdr, ctr_ftr, True)
 Range("A1").Select
+End Sub
 
+Sub RunReportR4PlrStats()
 'R4_PlyrStats
 
 Sheets.Add.Name = "R4_PlyrStats"
@@ -552,11 +577,7 @@ Selection.Sort Key1:=Range("A2"), Order1:=xlAscending, Header:=xlYes, _
                DataOption1:=xlSortNormal
 lastrow = ActiveSheet.UsedRange.Rows.Count
 For x = 2 To lastrow
- If Rpt_Tm_Dot Then
-  Cells(x, 4) = Left(Cells(x, 2), 3) & "." & Right(Cells(x, 2), 1) & ":" & Cells(x, 3)
- Else
-  Cells(x, 4) = Cells(x, 2) & ":" & Cells(x, 3)
- End If
+    Cells(x, 4) = GetTeamCode(Cells(x, 2), Cells(x, 3), Rpt_Tm_Dot)
 Next x
 Cells(1, 1) = "Player"
 Cells(1, 4) = "Team"
@@ -600,21 +621,6 @@ tmp = PrintSetup("$A$1:$K$", lft_hdr, ctr_hdr, rht_hdr, ctr_ftr, False)
 ActiveSheet.PageSetup.PrintArea = "$A$1:$K$" & lastrow
 Range("A1").Select
 
-
-Sheets("Players").Select
-Range("A1").Select
-Sheets("Menu").Select
-ActiveSheet.Unprotect
-ActiveSheet.Shapes("V_Rpt1_Box").TextFrame.Characters.Font.ColorIndex = 1
-ActiveSheet.Shapes("V_Rpt1_Box").OnAction = "V_Rpt1"
-ActiveSheet.Shapes("V_Rpt2_Box").TextFrame.Characters.Font.ColorIndex = 1
-ActiveSheet.Shapes("V_Rpt2_Box").OnAction = "V_Rpt2"
-ActiveSheet.Shapes("V_Rpt3_Box").TextFrame.Characters.Font.ColorIndex = 1
-ActiveSheet.Shapes("V_Rpt3_Box").OnAction = "V_Rpt3"
-ActiveSheet.Shapes("V_Rpt4_Box").TextFrame.Characters.Font.ColorIndex = 1
-ActiveSheet.Shapes("V_Rpt4_Box").OnAction = "V_Rpt4"
-ActiveSheet.Protect DrawingObjects:=True, Contents:=True, Scenarios:=True
-tmp = Tidy_Up("Run_Reports_Info")
 End Sub
 
 Sub Get_Results()
@@ -3344,6 +3350,16 @@ If div_format = "9S1D" Then
  GA10_5 = tmp_sc(59)
  GA10_6 = tmp_sc(60)
 End If
+End Function
+
+Public Function GetTeamCode(Team As String, Division As Integer, SplitTeamName As Boolean) As String
+    If Trim(Team) = "" Then
+        GetTeamCode = ""
+    ElseIf SplitTeamName Then
+        GetTeamCode = Left(Team, 3) & "." & Right(Team, 1) & ":" & Division
+    Else
+        GetTeamCode = Team & ":" & Division
+    End If
 End Function
 
 Public Sub TestProcessFixtures()
