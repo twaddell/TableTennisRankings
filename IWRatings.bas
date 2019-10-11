@@ -2311,7 +2311,12 @@ Else
 End If
 End Function
 Function RvScore(var1)
-RvScore = Right(var1, 2) & Mid(var1, 3, 1) & Left(var1, 2)
+    If InStr(var1, "~") Then
+        scores = Split(var1, "~")
+        RvScore = scores(1) & "~" & scores(0)
+    Else
+        RvScore = ""
+    End If
 End Function
 Function PlRslt_Aft(v_rtgh, v_rtga, v_tmph, v_tmpa)
 Sheets("PlyrRslt").Cells(PlrRslt_Row, 17) = v_rtgh

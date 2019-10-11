@@ -67,11 +67,11 @@ Sub CopyToResults(tmentResults As Collection)
         oMatchResult.PlayerX = oTmentResult.PlayerB
         oMatchResult.PlayerY = "Forfeit"
         oMatchResult.PlayerZ = "Forfeit"
-        oMatchResult.Games(0).Ends(0) = "99-99"
-        oMatchResult.Games(0).Ends(1) = "99-99"
-        oMatchResult.Games(0).Ends(2) = "99-99"
-        oMatchResult.Games(0).Ends(3) = "99-99"
-        oMatchResult.Games(0).Ends(4) = "99-99"
+        oMatchResult.Games(0).Ends(0) = "99~99"
+        oMatchResult.Games(0).Ends(1) = "99~99"
+        oMatchResult.Games(0).Ends(2) = "99~99"
+        oMatchResult.Games(0).Ends(3) = "99~99"
+        oMatchResult.Games(0).Ends(4) = "99~99"
         
         matchResults.Add oMatchResult
     Next
