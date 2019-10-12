@@ -324,7 +324,11 @@ Selection.Sort Key1:=Range("A2"), Order1:=xlAscending, Header:=xlYes, _
                DataOption1:=xlSortNormal
 lastrow = ActiveSheet.UsedRange.Rows.Count
 For x = 2 To lastrow
- Cells(x, 4) = GetTeamCode(Cells(x, 2), Cells(x, 3), Rpt_Tm_Dot)
+    If Cells(x, 3) <> 0 Then
+        Cells(x, 4) = Cells(x, 3)
+    Else
+        Cells(x, 4) = ""
+    End If
 Next x
 
 Columns("B:C").Select
@@ -339,7 +343,7 @@ Next x
 
 lastrow = ActiveSheet.UsedRange.Rows.Count
 Cells(1, 1) = "Player"
-Cells(1, 2) = "Team"
+Cells(1, 2) = "Div"
 Cells(1, 3) = "Rtg"
 Range("A1:C1").Font.Bold = True
 Columns("B:B").HorizontalAlignment = xlCenter
@@ -455,13 +459,17 @@ Selection.Sort Key1:=Range("A2"), Order1:=xlDescending, Header:=xlYes, _
                DataOption1:=xlSortNormal
 lastrow = ActiveSheet.UsedRange.Rows.Count
 For x = 2 To lastrow
-    Cells(x, 5) = GetTeamCode(Cells(x, 3), Cells(x, 4), Rpt_Tm_Dot)
+    If Cells(x, 4) <> 0 Then
+        Cells(x, 5) = Cells(x, 4)
+    Else
+        Cells(x, 5) = ""
+    End If
 Next x
 Columns("C:D").Select
 Selection.Delete Shift:=xlToLeft
 Cells(1, 1) = "Rtg"
 Cells(1, 2) = "Player"
-Cells(1, 3) = "Team"
+Cells(1, 3) = "Div"
 Range("A1:C1").Font.Bold = True
 Columns("C:C").HorizontalAlignment = xlCenter
 Cells(1, 1).HorizontalAlignment = xlCenter
